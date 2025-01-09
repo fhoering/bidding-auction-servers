@@ -15,6 +15,7 @@
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("@rules_buf//buf:defs.bzl", "buf_lint_test")
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+load("@com_google_protobuf//bazel:py_proto_library.bzl", "py_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_descriptor_set", "proto_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -45,6 +46,20 @@ cc_grpc_library(
     srcs = [":bidding_auction_servers_proto"],
     grpc_only = True,
     deps = [":bidding_auction_servers_cc_proto"],
+)
+
+py_proto_library(
+    name = "bna_api_py_pb2",
+     deps = [
+        ":bidding_auction_servers_proto",
+        "//api/udf:generate_bid_proto",
+        "@com_google_googleapis//google/api:annotations_proto",
+        "@com_google_googleapis//google/api:http_proto",
+        "@com_google_protobuf//:struct_proto",
+        "@google_privacysandbox_servers_common//src/logger:logger_proto",
+        "@google_privacysandbox_servers_common//apis/privacysandbox/apis/roma/app_api/v1:options_proto",
+    ]
+    
 )
 
 buf_lint_test(
